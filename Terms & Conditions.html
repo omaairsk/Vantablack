@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  <!-- Created by iamfardinsk -->
+<!-- This is a simple HTML page for a private search engine. -->
+<head>
+  <meta charset="UTF-8">
+  <title>Terms & Conditions</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    :root {
+      --bg: #0f172a;
+      --text: #f8fafc;
+      --accent: #3b82f6;
+      --input-bg: #1e293b;
+      --input-border: #334155;
+      --modal-bg: #1e293b;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      flex-direction: column;
+    }
+
+
+  </style>
+</head>
+
+<body>
+<h1>Terms & Conditions</h1>
+<!-- Modals -->
+  <div id="termsModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('termsModal')">&times;</span>
+      
+      <p>This search tool is provided as-is with no guarantee of availability or accuracy. You agree to use it at your own risk.</p>
+      <p>We do not store, track, or sell any user data. All searches are redirected to third-party engines like Google or DuckDuckGo.</p>
+    </div>
+  </div>
+
+
+
+</body>
+</html>
