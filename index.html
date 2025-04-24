@@ -1,199 +1,373 @@
 <!DOCTYPE html>
 <html lang="en">
-  <!-- Created by iamfardinsk -->
+<!-- Created by iamfardinsk -->
 <!-- This is a simple HTML page for a private search engine. -->
+
 <head>
-  <meta charset="UTF-8">
-  <title>Private Search</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <style>
-    :root {
-      --bg: #0f172a;
-      --text: #f8fafc;
-      --accent: #3b82f6;
-      --input-bg: #1e293b;
-      --input-border: #334155;
-      --modal-bg: #1e293b;
-    }
+    <meta charset="UTF-8">
+    <title>Private Search</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-body {
-  margin: 0;
-  padding: 0;
-  height: 100vh;
-  background: linear-gradient(-45deg, #0f172a, #1e3a8a, #0ea5e9, #0f172a);
-  background-size: 400% 400%;
-  animation: gradientBG 15s ease infinite;
-  color: #f8fafc;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  overflow: hidden;
-}
+    <label class="switch">
+  <input type="checkbox" id="adblockToggle" checked>
+  <span class="slider round"></span> Ad Blocker
+</label>
 
-@keyframes gradientBG {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
+    <div class="engine-selector">
+        <label for="engine">Search with:</label>
+        <select id="engine">
+      <option value="google">Google</option>
+      <option value="duckduckgo">DuckDuckGo</option>
+      <option value="bing">Bing</option>
+      <option value="brave">Brave</option>
+      <option value="startpage">Startpage</option>
+      <option value="ecosia">Ecosia</option>
+    </select>
+    </div>
 
 
-    h1 {
-      font-size: 2rem;
-      margin-bottom: 1rem;
-    }
-
-    form {
-      display: flex;
-      flex-direction: row;
-      gap: 0.5rem;
-      width: 90%;
-      max-width: 600px;
-    }
-
-    input[type="text"] {
-      flex: 1;
-      padding: 1rem;
-      font-size: 1rem;
-      border: 1px solid var(--input-border);
-      background-color: var(--input-bg);
-      color: var(--text);
-      border-radius: 0.5rem;
-      outline: none;
-      transition: border-color 0.3s ease;
-    }
-
-    input[type="text"]:focus {
-      border-color: var(--accent);
-    }
-
-    button {
-      padding: 1rem 1.5rem;
-      background-color: var(--accent);
-      color: white;
-      border: none;
-      border-radius: 0.5rem;
-      font-size: 1rem;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-    }
-
-    button:hover {
-      background-color: #2563eb;
-    }
-
-    .footer {
-      position: absolute;
-      bottom: 20px;
-      font-size: 0.9rem;
-      color: #94a3b8;
-      text-align: center;
-    }
-
-    .footer a {
-      color: #94a3b8;
-      text-decoration: underline;
-      margin: 0 8px;
-      cursor: pointer;
-    }
-
-    /* Modal styles */
-    .modal {
-      display: none;
-      position: fixed;
-      z-index: 10;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      overflow: auto;
-      background-color: rgba(15, 23, 42, 0.8);
-      padding-top: 60px;
-    }
-
-    .modal-content {
-      background-color: var(--modal-bg);
-      margin: 5% auto;
-      padding: 20px;
-      border: 1px solid var(--input-border);
-      border-radius: 1rem;
-      width: 80%;
-      max-width: 600px;
-      color: var(--text);
-    }
-
-    .close {
-      color: #ccc;
-      float: right;
-      font-size: 1.5rem;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    .close:hover {
-      color: #f87171;
-    }
-  </style>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha384-k6RqeWeci5ZR/Lv4MR0sA0FfDOM8d7j3z2l1e5c5e5b5e5b5e5b5e5b5e5b5b5" crossorigin="anonymous">
+    <style>
+         :root {
+            --bg: #0f172a;
+            --text: #f8fafc;
+            --accent: #3b82f6;
+            --input-bg: #1e293b;
+            --input-border: #334155;
+            --modal-bg: #1e293b;
+        }
+        
+        .engine-selector {
+            margin-top: 20px;
+            font-size: 0.9rem;
+            color: #f8fafc;
+        }
+        
+        select {
+            padding: 6px 10px;
+            border-radius: 8px;
+            border: none;
+            background: #1e293b;
+            color: #f8fafc;
+            font-size: 1rem;
+        }
+        
+        .switch {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .switch input {
+            display: none;
+        }
+        
+        .slider {
+            width: 40px;
+            height: 20px;
+            background-color: #ccc;
+            border-radius: 34px;
+            position: relative;
+            cursor: pointer;
+            transition: 0.4s;
+        }
+        
+        .slider::before {
+            content: "";
+            position: absolute;
+            height: 14px;
+            width: 14px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            border-radius: 50%;
+            transition: 0.4s;
+        }
+        
+        input:checked+.slider {
+            background-color: #0ea5e9;
+        }
+        
+        input:checked+.slider::before {
+            transform: translateX(20px);
+        }
+        
+        let adBlockEnabled=true;
+        document.getElementById('adblockToggle').addEventListener('change', function () {
+            adBlockEnabled=this.checked;
+            localStorage.setItem("adBlock", adBlockEnabled);
+        }
+        
+        );
+        // Load preference on page load
+        window.addEventListener("DOMContentLoaded", ()=> {
+            const storedPref=localStorage.getItem("adBlock");
+            if (storedPref !==null) {
+                adBlockEnabled=storedPref==="true";
+                document.getElementById('adblockToggle').checked=adBlockEnabled;
+            }
+        }
+        
+        );
+        if (adBlockEnabled) {
+            const adSelectors=['.ad',
+            '.sponsored',
+            '[id*="ad"]',
+            '[class*="ads"]'];
+            adSelectors.forEach(selector=> {
+                document.querySelectorAll(selector).forEach(el=> el.remove());
+            }
+            );
+        }
+        
+        document.addEventListener('DOMContentLoaded', ()=> {
+            document.querySelectorAll('video').forEach(video=> {
+                video.setAttribute('controls', 'true');
+                video.addEventListener('dblclick', ()=> {
+                    if (document.pictureInPictureEnabled) {
+                        video.requestPictureInPicture();
+                    }
+                }
+                );
+            }
+            );
+        }
+        
+        );
+        // In Electron's main process
+        app.commandLine.appendSwitch('autoplay-policy', 'no-user-gesture-required');
+        webPreferences: {
+            backgroundThrottling: false, autoplayPolicy: 'no-user-gesture-required'
+        }
+        
+        // background-play.js
+        const video=document.querySelector('video');
+        if (video) {
+            video.muted=false;
+            video.play();
+            document.hidden=false; // Attempt to spoof visibility
+        }
+        
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            background: linear-gradient(-45deg, #0f172a, #1e3a8a, #0ea5e9, #0f172a);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            color: #f8fafc;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        @keyframes gradientBG {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+        
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+        
+        form {
+            display: flex;
+            flex-direction: row;
+            gap: 0.5rem;
+            width: 90%;
+            max-width: 600px;
+        }
+        
+        input[type="text"] {
+            flex: 1;
+            padding: 1rem;
+            font-size: 1rem;
+            border: 1px solid var(--input-border);
+            background-color: var(--input-bg);
+            color: var(--text);
+            border-radius: 0.5rem;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+        
+        input[type="text"]:focus {
+            border-color: var(--accent);
+        }
+        
+        button {
+            padding: 1rem 1.5rem;
+            background-color: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        
+        button:hover {
+            background-color: #2563eb;
+        }
+        
+        .footer {
+            position: absolute;
+            bottom: 20px;
+            font-size: 0.9rem;
+            color: #94a3b8;
+            text-align: center;
+        }
+        
+        .footer a {
+            color: #94a3b8;
+            text-decoration: underline;
+            margin: 0 8px;
+            cursor: pointer;
+        }
+        /* Modal styles */
+        
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 10;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(15, 23, 42, 0.8);
+            padding-top: 60px;
+        }
+        
+        .modal-content {
+            background-color: var(--modal-bg);
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid var(--input-border);
+            border-radius: 1rem;
+            width: 80%;
+            max-width: 600px;
+            color: var(--text);
+        }
+        
+        .close {
+            color: #ccc;
+            float: right;
+            font-size: 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        .close:hover {
+            color: #f87171;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha384-k6RqeWeci5ZR/Lv4MR0sA0FfDOM8d7j3z2l1e5c5e5b5e5b5e5b5e5b5e5b5b5" crossorigin="anonymous">
 </head>
+
 <body>
-  <h1>🔍 Search Privately</h1>
-  <div class="centered-text"> <h6> By - Vantablack   </h6>   </div>
-  <form id="searchForm">
-    <input type="text" id="query" placeholder="Type your search..." autocomplete="off" />
-    <button type="submit">Go</button>
-  </form>
-
-  <div class="footer">
-    No logs. No tracking. Just search. |
-    <a id="openTerms">Terms & Conditions</a> |
-    <a id="openPrivacy">Privacy Policy</a>
-  </div>
-
-  <!-- Modals -->
-  <div id="termsModal" class="modal">
-    <div class="modal-content">
-      <span class="close" onclick="closeModal('termsModal')">&times;</span>
-      <h2>Terms & Conditions</h2>
-      <p>This search tool is provided as-is with no guarantee of availability or accuracy. You agree to use it at your own risk.</p>
-      <p>We do not store, track, or sell any user data. All searches are redirected to third-party engines like Google or DuckDuckGo.</p>
+    <h1>🔍 Search Privately</h1>
+    <div class="centered-text">
+        <h6> By - Vantablack </h6>
     </div>
-  </div>
+    <form id="searchForm">
+        <input type="text" id="query" placeholder="Type your search..." autocomplete="off" />
+        <button type="submit">Go</button>
+    </form>
 
-  <div id="privacyModal" class="modal">
-    <div class="modal-content">
-      <span class="close" onclick="closeModal('privacyModal')">&times;</span>
-      <h2>Privacy Policy</h2>
-      <p>We respect your privacy. This search tool does not log queries, store IP addresses, or use cookies.</p>
-      <p>Searches are sent directly to your chosen engine (e.g., Google) without tracking from our side.</p>
+    <div class="footer">
+        No logs. No tracking. Just search. |
+        <a id="openTerms">Terms & Conditions</a> |
+        <a id="openPrivacy">Privacy Policy</a>
     </div>
-  </div>
 
-  <script>
-    document.getElementById('searchForm').addEventListener('submit', function (e) {
-      e.preventDefault();
-      const query = document.getElementById('query').value.trim();
-      if (!query) return;
-      const encoded = encodeURIComponent(query);
-      window.location.href = `https://www.google.com/search?q=${encoded}`;
-      window.location.href = `https://duckduckgo.com/?q=${encoded}`;
+    <!-- Modals -->
+    <div id="termsModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('termsModal')">&times;</span>
+            <h2>Terms & Conditions</h2>
+            <p>This search tool is provided as-is with no guarantee of availability or accuracy. You agree to use it at your own risk.</p>
+            <p>We do not store, track, or sell any user data. All searches are redirected to third-party engines like Google or DuckDuckGo.</p>
+        </div>
+    </div>
 
-      //Developed by iamfardinsk
-    });
+    <div id="privacyModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('privacyModal')">&times;</span>
+            <h2>Privacy Policy</h2>
+            <p>We respect your privacy. This search tool does not log queries, store IP addresses, or use cookies.</p>
+            <p>Searches are sent directly to your chosen engine (e.g., Google) without tracking from our side.</p>
+        </div>
+    </div>
 
-    document.getElementById('openTerms').onclick = () => document.getElementById('termsModal').style.display = 'block';
-    document.getElementById('openPrivacy').onclick = () => document.getElementById('privacyModal').style.display = 'block';
+    <script>
+        document.getElementById('searchForm').addEventListener('submit', function(e) {
+            e.preventDefault();
 
-    function closeModal(id) {
-      document.getElementById(id).style.display = 'none';
-    }
+            const query = document.getElementById('query').value.trim();
+            const engine = document.getElementById('engine').value;
+            if (!query) return;
 
-    window.onclick = function(event) {
-      if (event.target.classList.contains('modal')) {
-        event.target.style.display = "none";
-      }
-    }
-  </script>
+            const encoded = encodeURIComponent(query);
+            let url = "";
+
+            switch (engine) {
+                case "google":
+                    url = `https://www.google.com/search?q=${encoded}`;
+                    break;
+                case "duckduckgo":
+                    url = `https://duckduckgo.com/?q=${encoded}`;
+                    break;
+                case "bing":
+                    url = `https://www.bing.com/search?q=${encoded}`;
+                    break;
+                case "brave":
+                    url = `https://search.brave.com/search?q=${encoded}`;
+                    break;
+                case "startpage":
+                    url = `https://www.startpage.com/do/search?query=${encoded}`;
+                    break;
+                case "ecosia":
+                    url = `https://www.ecosia.org/search?q=${encoded}`;
+                    break;
+                default:
+                    url = `https://www.google.com/search?q=${encoded}`;
+            }
+
+            // Optionally save the last engine selected
+            localStorage.setItem("preferredEngine", engine);
+            window.location.href = url;
+
+
+
+            //Developed by iamfardinsk
+        });
+
+        document.getElementById('openTerms').onclick = () => document.getElementById('termsModal').style.display = 'block';
+        document.getElementById('openPrivacy').onclick = () => document.getElementById('privacyModal').style.display = 'block';
+
+        function closeModal(id) {
+            document.getElementById(id).style.display = 'none';
+        }
+
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = "none";
+            }
+        }
+    </script>
 </body>
+
 </html>
