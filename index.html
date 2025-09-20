@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Website Under Construction</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Montserrat', sans-serif;
+            background: #1a1a1a;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            flex-direction: column;
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+            animation: slideIn 1s ease-out forwards;
+            opacity: 0;
+        }
+        
+        p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            animation: fadeIn 2s ease-out forwards;
+            opacity: 0;
+        }
+        
+        @keyframes slideIn {
+            0% {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            100% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+        /* Gear animation */
+        
+        .gear-container {
+            position: relative;
+            width: 150px;
+            height: 150px;
+            margin: 0 auto;
+        }
+        
+        .gear {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #fff;
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform-origin: center center;
+            animation: rotateGear 3s linear infinite;
+        }
+        
+        .gear:nth-child(2) {
+            width: 30px;
+            height: 30px;
+            top: 20%;
+            left: 20%;
+            animation-duration: 2s;
+        }
+        
+        .gear:nth-child(3) {
+            width: 40px;
+            height: 40px;
+            top: 70%;
+            left: 70%;
+            animation-duration: 4s;
+        }
+        
+        @keyframes rotateGear {
+            0% {
+                transform: translate(-50%, -50%) rotate(0deg);
+            }
+            100% {
+                transform: translate(-50%, -50%) rotate(360deg);
+            }
+        }
+        /* Sparkles animation */
+        
+        .sparkle {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            background: #ffcd3c;
+            border-radius: 50%;
+            animation: sparkleAnim 2s infinite;
+        }
+        
+        @keyframes sparkleAnim {
+            0% {
+                transform: translateY(0) scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: translateY(-20px) scale(1.5);
+                opacity: 0.5;
+            }
+            100% {
+                transform: translateY(0) scale(1);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <h1>🚧 Website Under Construction 🚧</h1>
+    <p>We're working hard to develop better tools and improve your experience. Stay tuned!</p>
+
+    <div class="gear-container">
+        <div class="gear"></div>
+        <div class="gear"></div>
+        <div class="gear"></div>
+    </div>
+
+    <!-- Sparkles -->
+    <div class="sparkle" style="top: 10%; left: 20%; animation-delay: 0s;"></div>
+    <div class="sparkle" style="top: 80%; left: 30%; animation-delay: 0.5s;"></div>
+    <div class="sparkle" style="top: 50%; left: 70%; animation-delay: 1s;"></div>
+    <div class="sparkle" style="top: 30%; left: 80%; animation-delay: 1.5s;"></div>
+</body>
+
+</html>
