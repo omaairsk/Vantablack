@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>VantaBlack — Private Search</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+
+    <style>
+         :root {
+            --bg-dark: #0b0f17;
+            --bg-light: #f5f7fb;
+            --glass-dark: rgba(255, 255, 255, 0.06);
+            --glass-light: rgba(0, 0, 0, 0.06);
+            --accent: #00ffd0;
+            --accent-2: #008cff;
+            --muted: rgba(245, 245, 245, 0.65);
+        }
+        
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            font-family: 'Inter', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+        }
+        
+        #vanta-bg {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(180deg, var(--bg-dark), #030405);
+            transition: background 350ms ease;
+        }
+        
+        .overlay {
+            position: absolute;
+            z-index: 10;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: min(95%, 980px);
+            max-width: 980px;
+            padding: 28px;
+            border-radius: 16px;
+            background: var(--glass-dark);
+            backdrop-filter: blur(10px) saturate(120%);
+            box-shadow: 0 10px 40px rgba(2, 6, 23, 0.6);
+            color: #eafafa;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            align-items: center;
+            transition: background 300ms ease, color 300ms ease;
+        }
+        
+        header {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            width: 100%;
+            justify-content: space-between;
+            user-select: none;
+        }
+        
+        .brand {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+        
+        .logo {
+            width: 48px;
+            height: 48px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-2));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #011;
+            font-weight: 800;
+            box-shadow: 0 6px 18px rgba(0, 140, 255, 0.12);
+        }
+        
+        .brand h1 {
+            margin: 0;
+            font-size: 1.3rem;
+            letter-spacing: 0.6px;
+            color: inherit;
+        }
+        
+        .hero {
+            text-align: center;
+        }
+        
+        .hero-title {
+            margin: 0;
+            font-size: clamp(20px, 3.2vw, 36px);
+            font-weight: 700;
+            color: var(--accent);
+            text-shadow: 0 6px 24px rgba(0, 204, 180, 0.08);
+        }
+        
+        .typing {
+            display: inline-block;
+            margin-left: 8px;
+            color: #dff;
+        }
+        
+        .cursor {
+            display: inline-block;
+            width: 1ch;
+            animation: blink 900ms steps(1) infinite;
+            color: var(--accent-2);
+        }
+        
+        @keyframes blink {
+            0%,
+            100% {
+                opacity: 0
+            }
+            50% {
+                opacity: 1
+            }
+        }
+        
+        .search-row {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .search-box {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 14px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            transition: transform .18s ease, box-shadow .18s ease;
+        }
+        
+        .search-box:focus-within {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.45);
+        }
+        
+        .search-box input {
+            background: transparent;
+            border: none;
+            outline: none;
+            color: #eef;
+            font-size: 16px;
+            width: 100%;
+        }
+        
+        .icon-btn {
+            display: inline-grid;
+            place-items: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            cursor: pointer;
+        }
+        
+        .controls {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .controls-left {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        .controls-right {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        .pill {
+            padding: 8px 14px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            cursor: pointer;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            font-weight: 600;
+            color: #e8f;
+        }
+        
+        select,
+        input[type="checkbox"] {
+            font-family: inherit;
+        }
+        
+        .hint {
+            font-size: 13px;
+            color: rgba(230, 245, 245, 0.7);
+            opacity: 0.9;
+        }
+        
+        body.light #vanta-bg {
+            background: linear-gradient(180deg, var(--bg-light), #e6eef9);
+        }
+        
+        body.light .overlay {
+            background: var(--glass-light);
+            color: #0d1721;
+            box-shadow: 0 10px 30px rgba(8, 12, 20, 0.06);
+        }
+        
+        body.light .brand h1 {
+            color: #0d1721;
+        }
+        
+        body.light .pill {
+            color: #08303b;
+            background: rgba(0, 0, 0, 0.03);
+            border-color: rgba(0, 0, 0, 0.06);
+        }
+        
+        @media (max-width:720px) {
+            .controls-right {
+                margin-top: 8px;
+                width: 100%;
+                justify-content: center;
+            }
+            .search-row {
+                flex-direction: column;
+                gap: 12px;
+            }
+            .search-box {
+                padding: 10px;
+            }
+        }
+        /* Footer & Modals */
+        
+        .footer {
+            text-align: center;
+            margin-top: 24px;
+            font-size: 13px;
+            color: rgba(230, 245, 245, 0.7);
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 50;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .modal-content {
+            background: var(--glass-dark);
+            color: #eafafa;
+            padding: 24px;
+            border-radius: 16px;
+            max-width: 500px;
+            width: 90%;
+            position: relative;
+            backdrop-filter: blur(12px) saturate(120%);
+            box-shadow: 0 10px 40px rgba(2, 6, 23, 0.6);
+            transform: scale(0.8);
+            transition: all 0.3s ease;
+        }
+        
+        .modal-content h2 {
+            margin-top: 0;
+        }
+        
+        .close {
+            position: absolute;
+            top: 10px;
+            right: 14px;
+            cursor: pointer;
+            font-size: 20px;
+        }
+        
+        body.light .modal-content {
+            background: var(--glass-light);
+            color: #0d1721;
+        }
+        /* Voice mic animation */
+        
+        .mic-active {
+            animation: pulse 0.8s infinite;
+        }
+        
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                background-color: rgba(0, 255, 208, 0.2);
+            }
+            50% {
+                transform: scale(1.15);
+                background-color: rgba(0, 255, 208, 0.5);
+            }
+            100% {
+                transform: scale(1);
+                background-color: rgba(0, 255, 208, 0.2);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="vanta-bg">
+        <div class="overlay" role="main" aria-label="VantaBlack interface">
+            <header>
+                <div class="brand">
+                    <div class="logo">VB</div>
+                    <div>
+                        <h1>VantaBlack</h1>
+                        <div style="font-size:12px; color:var(--muted); margin-top:2px;">Private search, beautifully built</div>
+                    </div>
+                </div>
+
+                <div style="display:flex; gap:8px; align-items:center;">
+                    <label style="display:flex; gap:8px; align-items:center; cursor:pointer;">
+                        <input id="themeToggle" type="checkbox" aria-label="Toggle dark light" />
+                        <span class="pill" id="themeLabel">Dark / Light</span>
+                    </label>
+
+                    <label style="display:flex; gap:8px; align-items:center; cursor:pointer;">
+                        <select id="vantaSelector" title="Background style" aria-label="Background selector">
+                            <option value="NET">Net</option>
+                            <option value="WAVES">Waves</option>
+                            <option value="GLOBE">Globe</option>
+                            <option value="CELLS">Cells</option>
+                            <option value="FOG">Fog</option>
+                            <option value="DOTS">Dots</option>
+                        </select>
+                    </label>
+                </div>
+            </header>
+
+            <div class="hero">
+                <div class="hero-title">
+                    <span id="staticTitle">🔍 Search Privately</span>
+                    <span class="typing" id="typed"></span><span class="cursor">|</span>
+                </div>
+            </div>
+
+            <div class="search-row" role="search" aria-label="Search form">
+                <div class="search-box" aria-hidden="false">
+                    <input id="searchInput" type="text" placeholder="Type or speak to search — privacy first" autocomplete="off" />
+                    <button id="micBtn" class="icon-btn" title="Voice search" aria-label="Voice search">🎙️</button>
+                    <button id="searchBtn" class="icon-btn" title="Search" aria-label="Search">➡️</button>
+                </div>
+
+                <div style="display:flex; gap:8px; align-items:center;">
+                    <select id="engineSelect" aria-label="Choose search engine">
+                        <option value="https://www.google.com/search?q=">Google</option>
+                        <option value="https://duckduckgo.com/?q=">DuckDuckGo</option>
+                        <option value="https://www.bing.com/search?q=">Bing</option>
+                        <option value="https://search.brave.com/search?q=">Brave</option>
+                        <option value="https://www.startpage.com/do/search?query=">Startpage</option>
+                        <option value="https://www.ecosia.org/search?q=">Ecosia</option>
+                    </select>
+
+                    <button id="adBlockToggle" class="pill" title="Toggle ad block">🛡️ AdBlock ON</button>
+                </div>
+            </div>
+
+            <div class="controls">
+                <div class="controls-center">
+                    <div class="hint">Tip: Use the mic for hands-free search</div>
+                </div>
+                <div class="controls-right">
+                    <div class="hint">Background effect powered by Vanta.js</div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="footer">
+                No logs. No tracking. Just search. |
+                <a id="openTerms">Terms & Conditions</a> |
+                <a id="openPrivacy">Privacy Policy</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <div id="termsModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('termsModal')">&times;</span>
+            <h2>Terms & Conditions</h2>
+            <p>This search tool is provided as-is with pure guarantee of availability or accuracy. You are encouraged to use it responsibly.</p>
+            <p>We do not store, track, or sell any user data. All searches are redirected to third-party engines like Google or DuckDuckGo.</p>
+        </div>
+    </div>
+
+    <div id="privacyModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('privacyModal')">&times;</span>
+            <h2>Privacy Policy</h2>
+            <p>We respect your privacy. This search tool does not log queries, store IP addresses, or use cookies.</p>
+            <p>Searches are sent directly to your chosen engine (e.g., Google) without tracking from our side.</p>
+        </div>
+    </div>
+
+    <!-- Developed by iamfardinsk -->
+
+    <!-- Vanta + three.js (CDNs) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r121/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.net.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.waves.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.globe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.cells.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.fog.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.dots.min.js"></script>
+
+    <script>
+        /***** Typing animation (loop) *****/
+        (function typingLoop() {
+            const fullText = "Explore privately. Fast. Secure.";
+            const el = document.getElementById('typed');
+            let i = 0,
+                deleting = false;
+
+            function step() {
+                if (!deleting) {
+                    if (i <= fullText.length) {
+                        el.textContent = fullText.slice(0, i);
+                        i++;
+                        setTimeout(step, 55);
+                    } else {
+                        deleting = true;
+                        setTimeout(step, 1400);
+                    }
+                } else {
+                    if (i > 0) {
+                        i--;
+                        el.textContent = fullText.slice(0, i);
+                        setTimeout(step, 35);
+                    } else {
+                        deleting = false;
+                        setTimeout(step, 600);
+                    }
+                }
+            }
+            step();
+        })();
+
+        /***** Vanta manager *****/
+        let currentVanta = null;
+
+        function getThemeColors() {
+            const isLight = document.body.classList.contains('light');
+            return {
+                bg: isLight ? 0xffffff : 0x0b0f17,
+                colorA: isLight ? 0x008cff : 0x00ffd0,
+                colorB: isLight ? 0x00aaff : 0x008cff
+            };
+        }
+
+        function loadVanta(effectName) {
+            try {
+                if (currentVanta && currentVanta.destroy) currentVanta.destroy();
+            } catch (e) {}
+            const colors = getThemeColors();
+            const opts = {
+                el: "#vanta-bg",
+                mouseControls: true,
+                touchControls: true,
+                gyroControls: false,
+                minHeight: 200.00,
+                minWidth: 200.00,
+                scale: 1.0,
+                scaleMobile: 1.0,
+                color: colors.colorA,
+                backgroundColor: colors.bg,
+            };
+
+            switch (effectName) {
+                case 'NET':
+                    currentVanta = VANTA.NET(Object.assign(opts, {
+                        points: 12.0,
+                        maxDistance: 20.0,
+                        spacing: 16.0
+                    }));
+                    break;
+                case 'WAVES':
+                    currentVanta = VANTA.WAVES(Object.assign(opts, {
+                        waveHeight: 20.0,
+                        waveSpeed: 1.0,
+                        zoom: 0.9
+                    }));
+                    break;
+                case 'GLOBE':
+                    currentVanta = VANTA.GLOBE(Object.assign(opts, {
+                        color: colors.colorB,
+                        backgroundColor: colors.bg,
+                        size: 1.0
+                    }));
+                    break;
+                case 'CELLS':
+                    currentVanta = VANTA.CELLS(Object.assign(opts, {
+                        size: 1.8,
+                        points: 4.0
+                    }));
+                    break;
+                case 'FOG':
+                    currentVanta = VANTA.FOG(Object.assign(opts, {
+                        highlightColor: colors.colorA,
+                        midtoneColor: colors.colorB,
+                        lowlightColor: colors.colorB
+                    }));
+                    break;
+                case 'DOTS':
+                    currentVanta = VANTA.DOTS(Object.assign(opts, {
+                        size: 2.0,
+                        spacing: 20.0
+                    }));
+                    break;
+                default:
+                    currentVanta = VANTA.NET(opts);
+                    break;
+            }
+        }
+
+        // Initialize default Vanta
+        window.addEventListener('load', () => {
+            const saved = localStorage.getItem('vantaEffect') || 'NET';
+            const savedTheme = localStorage.getItem('vantaTheme') || 'dark';
+            if (savedTheme === 'light') {
+                document.body.classList.add('light');
+                document.getElementById('themeToggle').checked = true;
+            }
+            document.getElementById('vantaSelector').value = saved;
+            loadVanta(saved);
+        });
+
+        // Change Vanta when selector is changed
+        document.getElementById('vantaSelector').addEventListener('change', (e) => {
+            const val = e.target.value;
+            localStorage.setItem('vantaEffect', val);
+            loadVanta(val);
+        });
+
+        // Theme toggle updates both page and vanta colors
+        document.getElementById('themeToggle').addEventListener('change', (e) => {
+            const on = e.target.checked;
+            document.body.classList.toggle('light', on);
+            localStorage.setItem('vantaTheme', on ? 'light' : 'dark');
+            const cur = document.getElementById('vantaSelector').value || 'NET';
+            loadVanta(cur);
+        });
+
+        /***** Search / engine selection logic *****/
+        const searchBtn = document.getElementById('searchBtn');
+        const searchInput = document.getElementById('searchInput');
+        const engineSelect = document.getElementById('engineSelect');
+
+        function doSearch() {
+            const q = (searchInput.value || '').trim();
+            if (!q) return;
+            const engine = engineSelect.value;
+            localStorage.setItem('preferredEngine', engine);
+            window.location.href = engine + encodeURIComponent(q);
+        }
+
+        searchBtn.addEventListener('click', doSearch);
+        searchInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') doSearch();
+        });
+
+        // restore preferred engine
+        window.addEventListener('DOMContentLoaded', () => {
+            const pref = localStorage.getItem('preferredEngine');
+            if (pref) engineSelect.value = pref;
+        });
+
+        /***** Fake adblock toggle (UI only placeholder) *****/
+        const adBlockBtn = document.getElementById('adBlockToggle');
+        let adBlockOn = true;
+        adBlockBtn.addEventListener('click', () => {
+            adBlockOn = !adBlockOn;
+            adBlockBtn.textContent = adBlockOn ? '🛡️ AdBlock ON' : '🛡️ AdBlock OFF';
+            localStorage.setItem('adBlockOn', adBlockOn ? '1' : '0');
+        });
+
+        (function restoreAdBlock() {
+            const s = localStorage.getItem('adBlockOn');
+            if (s === '0') {
+                adBlockOn = false;
+                adBlockBtn.textContent = '🛡️ AdBlock OFF';
+            }
+        })();
+
+        /***** Voice search (Web Speech API) *****/
+        const micBtn = document.getElementById('micBtn');
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (SpeechRecognition) {
+            const recognition = new SpeechRecognition();
+            recognition.continuous = false;
+            recognition.interimResults = false;
+            recognition.lang = 'en-US';
+            recognition.onresult = (evt) => {
+                const t = evt.results[0][0].transcript || '';
+                searchInput.value = t;
+                micBtn.classList.remove('mic-active');
+                doSearch();
+            };
+            recognition.onerror = (e) => {
+                console.warn('Speech error', e);
+                micBtn.classList.remove('mic-active');
+            };
+            recognition.onend = () => micBtn.classList.remove('mic-active');
+            micBtn.addEventListener('click', () => {
+                try {
+                    recognition.start();
+                    micBtn.classList.add('mic-active');
+                } catch (err) {
+                    console.error(err);
+                    micBtn.classList.remove('mic-active');
+                }
+            });
+        } else {
+            micBtn.title = 'Voice search not supported';
+            micBtn.style.opacity = '0.6';
+        }
+
+        /***** Modal logic *****/
+        function openModal(id) {
+            const modal = document.getElementById(id);
+            const content = modal.querySelector('.modal-content');
+            modal.style.display = 'flex';
+            setTimeout(() => {
+                modal.style.opacity = 1;
+                content.style.transform = 'scale(1)';
+            }, 10);
+        }
+
+        function closeModal(id) {
+            const modal = document.getElementById(id);
+            const content = modal.querySelector('.modal-content');
+            content.style.transform = 'scale(0.8)';
+            modal.style.opacity = 0;
+            setTimeout(() => {
+                modal.style.display = 'none';
+            }, 300);
+        }
+
+        document.getElementById('openTerms').addEventListener('click', () => openModal('termsModal'));
+        document.getElementById('openPrivacy').addEventListener('click', () => openModal('privacyModal'));
+        window.addEventListener('click', (e) => {
+            ['termsModal', 'privacyModal'].forEach(id => {
+                const modal = document.getElementById(id);
+                if (e.target === modal) closeModal(id);
+            });
+        });
+
+        window.addEventListener('beforeunload', () => {
+            try {
+                if (currentVanta && currentVanta.destroy) currentVanta.destroy();
+            } catch (e) {}
+        });
+    </script>
+</body>
+
+</html>
