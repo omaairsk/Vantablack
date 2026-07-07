@@ -2,684 +2,709 @@
 <html lang="en">
 
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>VantaBlack — Private Search</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="color-scheme" content="dark light" />
+<meta name="theme-color" content="#080b10" />
+<title>VantaBlack — Private Search</title>
 
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  @font-face {
+    font-family: 'Orbitron';
+    src: local('Orbitron');
+    font-display: swap;
+  }
 
-    <style>
-         :root {
-            --bg-dark: #0b0f17;
-            --bg-light: #f5f7fb;
-            --glass-dark: rgba(255, 255, 255, 0.06);
-            --glass-light: rgba(0, 0, 0, 0.06);
-            --accent: #00ffd0;
-            --accent-2: #008cff;
-            --muted: rgba(245, 245, 245, 0.65);
-        }
-        
-        html,
-        body {
-            height: 100%;
-            margin: 0;
-            font-family: 'Inter', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-        }
-        
-        #vanta-bg {
-            width: 100%;
-            height: 100%;
-            position: relative;
-            overflow: hidden;
-            background: linear-gradient(180deg, var(--bg-dark), #030405);
-            transition: background 350ms ease;
-        }
-        
-        .overlay {
-            position: absolute;
-            z-index: 10;
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%, -50%);
-            width: min(95%, 980px);
-            max-width: 980px;
-            padding: 28px;
-            border-radius: 16px;
-            background: var(--glass-dark);
-            backdrop-filter: blur(10px) saturate(120%);
-            box-shadow: 0 10px 40px rgba(2, 6, 23, 0.6);
-            color: #eafafa;
-            display: flex;
-            flex-direction: column;
-            gap: 18px;
-            align-items: center;
-            transition: background 300ms ease, color 300ms ease;
-        }
-        
-        header {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            width: 100%;
-            justify-content: space-between;
-            user-select: none;
-        }
-        
-        .brand {
-            display: flex;
-            gap: 12px;
-            align-items: center;
-        }
-        
-        .logo {
-            width: 48px;
-            height: 48px;
-            border-radius: 10px;
-            background: linear-gradient(135deg, var(--accent), var(--accent-2));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #011;
-            font-weight: 800;
-            box-shadow: 0 6px 18px rgba(0, 140, 255, 0.12);
-        }
-        
-        .brand h1 {
-            margin: 0;
-            font-size: 1.3rem;
-            letter-spacing: 0.6px;
-            color: inherit;
-        }
-        
-        .hero {
-            text-align: center;
-        }
-        
-        .hero-title {
-            margin: 0;
-            font-size: clamp(20px, 3.2vw, 36px);
-            font-weight: 700;
-            color: var(--accent);
-            text-shadow: 0 6px 24px rgba(0, 204, 180, 0.08);
-        }
-        
-        .typing {
-            display: inline-block;
-            margin-left: 8px;
-            color: #dff;
-        }
-        
-        .cursor {
-            display: inline-block;
-            width: 1ch;
-            animation: blink 900ms steps(1) infinite;
-            color: var(--accent-2);
-        }
-        
-        @keyframes blink {
-            0%,
-            100% {
-                opacity: 0
-            }
-            50% {
-                opacity: 1
-            }
-        }
-        
-        .search-row {
-            width: 100%;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .search-box {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 12px 14px;
-            border-radius: 999px;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            transition: transform .18s ease, box-shadow .18s ease;
-        }
-        
-        .search-box:focus-within {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.45);
-        }
-        
-        .search-box input {
-            background: transparent;
-            border: none;
-            outline: none;
-            color: #eef;
-            font-size: 16px;
-            width: 100%;
-        }
-        
-        .icon-btn {
-            display: inline-grid;
-            place-items: center;
-            width: 40px;
-            height: 40px;
-            border-radius: 10px;
-            background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
-            border: 1px solid rgba(255, 255, 255, 0.04);
-            cursor: pointer;
-        }
-        
-        .controls {
-            width: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-        
-        .controls-left {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
-        
-        .controls-right {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
-        
-        .pill {
-            padding: 8px 14px;
-            border-radius: 999px;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.04);
-            cursor: pointer;
-            display: flex;
-            gap: 8px;
-            align-items: center;
-            font-weight: 600;
-            color: #e8f;
-        }
-        
-        select,
-        input[type="checkbox"] {
-            font-family: inherit;
-        }
-        
-        .hint {
-            font-size: 13px;
-            color: rgba(230, 245, 245, 0.7);
-            opacity: 0.9;
-        }
-        
-        body.light #vanta-bg {
-            background: linear-gradient(180deg, var(--bg-light), #e6eef9);
-        }
-        
-        body.light .overlay {
-            background: var(--glass-light);
-            color: #0d1721;
-            box-shadow: 0 10px 30px rgba(8, 12, 20, 0.06);
-        }
-        
-        body.light .brand h1 {
-            color: #0d1721;
-        }
-        
-        body.light .pill {
-            color: #08303b;
-            background: rgba(0, 0, 0, 0.03);
-            border-color: rgba(0, 0, 0, 0.06);
-        }
-        
-        @media (max-width:720px) {
-            .controls-right {
-                margin-top: 8px;
-                width: 100%;
-                justify-content: center;
-            }
-            .search-row {
-                flex-direction: column;
-                gap: 12px;
-            }
-            .search-box {
-                padding: 10px;
-            }
-        }
-        /* Footer & Modals */
-        
-        .footer {
-            text-align: center;
-            margin-top: 24px;
-            font-size: 13px;
-            color: rgba(230, 245, 245, 0.7);
-        }
-        
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            z-index: 50;
-            justify-content: center;
-            align-items: center;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-        
-        .modal-content {
-            background: var(--glass-dark);
-            color: #eafafa;
-            padding: 24px;
-            border-radius: 16px;
-            max-width: 500px;
-            width: 90%;
-            position: relative;
-            backdrop-filter: blur(12px) saturate(120%);
-            box-shadow: 0 10px 40px rgba(2, 6, 23, 0.6);
-            transform: scale(0.8);
-            transition: all 0.3s ease;
-        }
-        
-        .modal-content h2 {
-            margin-top: 0;
-        }
-        
-        .close {
-            position: absolute;
-            top: 10px;
-            right: 14px;
-            cursor: pointer;
-            font-size: 20px;
-        }
-        
-        body.light .modal-content {
-            background: var(--glass-light);
-            color: #0d1721;
-        }
-        /* Voice mic animation */
-        
-        .mic-active {
-            animation: pulse 0.8s infinite;
-        }
-        
-        @keyframes pulse {
-            0% {
-                transform: scale(1);
-                background-color: rgba(0, 255, 208, 0.2);
-            }
-            50% {
-                transform: scale(1.15);
-                background-color: rgba(0, 255, 208, 0.5);
-            }
-            100% {
-                transform: scale(1);
-                background-color: rgba(0, 255, 208, 0.2);
-            }
-        }
-    </style>
+  :root{
+    --bg-0:#05070b;
+    --bg-1:#0a0f18;
+    --bg-2:#0d1420;
+    --panel: rgba(255,255,255,0.045);
+    --panel-border: rgba(255,255,255,0.09);
+    --panel-hi: rgba(255,255,255,0.08);
+    --text-0:#eaf7f5;
+    --text-1:rgba(234,247,245,0.72);
+    --text-2:rgba(234,247,245,0.46);
+    --cyan:#00ffd0;
+    --cyan-dim:#00b795;
+    --blue:#3d8bff;
+    --gold:#e8c46a;
+    --danger:#ff5d7a;
+    --radius-lg:20px;
+    --radius-md:14px;
+    --radius-sm:10px;
+    --ease: cubic-bezier(.22,.85,.36,1);
+    --shadow-deep: 0 20px 60px rgba(0,0,0,.55), 0 2px 8px rgba(0,0,0,.35);
+    --font-display:'Orbitron', 'Segoe UI', sans-serif;
+    --font-body:'Inter', system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  }
+
+  html.light{
+    --bg-0:#eef2f8;
+    --bg-1:#f7f9fc;
+    --bg-2:#e6ecf5;
+    --panel: rgba(10,20,35,0.045);
+    --panel-border: rgba(10,20,35,0.09);
+    --panel-hi: rgba(10,20,35,0.07);
+    --text-0:#0c1622;
+    --text-1:rgba(12,22,34,0.72);
+    --text-2:rgba(12,22,34,0.48);
+    --cyan:#0aa88e;
+    --cyan-dim:#068a74;
+    --blue:#1f6fe0;
+    --shadow-deep: 0 20px 50px rgba(20,30,50,.12), 0 2px 6px rgba(20,30,50,.08);
+  }
+
+  *{ box-sizing:border-box; }
+  html,body{ height:100%; margin:0; }
+  body{
+    font-family:var(--font-body);
+    color:var(--text-0);
+    background:var(--bg-0);
+    overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+  }
+  ::selection{ background:var(--cyan); color:#03211c; }
+
+  #stage{
+    position:fixed;
+    inset:0;
+    background:
+      radial-gradient(120% 90% at 15% -10%, color-mix(in srgb, var(--cyan) 10%, transparent), transparent 55%),
+      radial-gradient(100% 80% at 100% 110%, color-mix(in srgb, var(--blue) 12%, transparent), transparent 60%),
+      linear-gradient(180deg, var(--bg-1), var(--bg-0) 65%);
+    transition: background .4s var(--ease);
+  }
+  #fx-canvas{ position:absolute; inset:0; width:100%; height:100%; display:block; }
+
+  .noise{
+    position:fixed; inset:0; pointer-events:none; opacity:.035; mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='90' height='90'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+    z-index:2;
+  }
+
+  .app{
+    position:relative; z-index:3;
+    min-height:100dvh;
+    display:flex; align-items:center; justify-content:center;
+    padding: clamp(14px, 4vw, 40px);
+  }
+
+  .card{
+    width:100%;
+    max-width:960px;
+    background:var(--panel);
+    border:1px solid var(--panel-border);
+    border-radius:var(--radius-lg);
+    backdrop-filter: blur(18px) saturate(140%);
+    -webkit-backdrop-filter: blur(18px) saturate(140%);
+    box-shadow:var(--shadow-deep);
+    padding: clamp(20px, 3.4vw, 40px);
+    display:flex; flex-direction:column; gap: clamp(18px, 2.6vw, 30px);
+    animation: rise .6s var(--ease) both;
+  }
+  @keyframes rise{ from{ opacity:0; transform:translateY(14px) scale(.99);} to{opacity:1; transform:none;} }
+
+  header{
+    display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;
+  }
+  .brand{ display:flex; align-items:center; gap:14px; min-width:0; }
+  .logo{
+    width:46px; height:46px; flex:none; border-radius:12px;
+    background: conic-gradient(from 220deg, var(--cyan), var(--blue), var(--cyan));
+    display:grid; place-items:center;
+    font-family:var(--font-display); font-weight:700; font-size:14px; letter-spacing:1px;
+    color:#031711;
+    box-shadow: 0 0 0 1px rgba(255,255,255,.08) inset, 0 8px 24px color-mix(in srgb, var(--cyan) 35%, transparent);
+    position:relative; overflow:hidden;
+  }
+  .logo::after{
+    content:''; position:absolute; inset:0;
+    background:linear-gradient(115deg, transparent 40%, rgba(255,255,255,.55) 50%, transparent 60%);
+    transform:translateX(-120%);
+    animation: sheen 5s ease-in-out infinite;
+  }
+  @keyframes sheen{ 0%,70%{transform:translateX(-120%);} 85%{transform:translateX(120%);} 100%{transform:translateX(120%);} }
+
+  .brand-text h1{
+    margin:0; font-family:var(--font-display); font-weight:700;
+    font-size: clamp(15px, 2.1vw, 19px); letter-spacing:2px; line-height:1;
+    color:var(--text-0);
+  }
+  .brand-text span{
+    display:block; margin-top:5px; font-size:11.5px; letter-spacing:.3px; color:var(--text-2);
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  }
+
+  .head-controls{ display:flex; align-items:center; gap:8px; }
+
+  .switch{
+    display:inline-flex; align-items:center; gap:8px; cursor:pointer; user-select:none;
+    padding:8px 10px; border-radius:999px; border:1px solid var(--panel-border); background:var(--panel-hi);
+    transition: background .2s var(--ease), border-color .2s var(--ease);
+  }
+  .switch:hover{ border-color: color-mix(in srgb, var(--cyan) 40%, var(--panel-border)); }
+  .switch input{ appearance:none; -webkit-appearance:none; width:32px; height:18px; border-radius:999px;
+    background: rgba(255,255,255,.14); position:relative; outline:none; cursor:pointer; flex:none;
+    transition: background .2s var(--ease);
+  }
+  .switch input::before{
+    content:''; position:absolute; top:2px; left:2px; width:14px; height:14px; border-radius:50%;
+    background:#fff; transition: transform .22s var(--ease);
+  }
+  .switch input:checked{ background: color-mix(in srgb, var(--cyan) 55%, transparent); }
+  .switch input:checked::before{ transform:translateX(14px); }
+  .switch-label{ font-size:12px; color:var(--text-1); white-space:nowrap; }
+
+  select.fx-select{
+    appearance:none; -webkit-appearance:none;
+    background:var(--panel-hi); color:var(--text-0);
+    border:1px solid var(--panel-border); border-radius:999px;
+    padding:8px 30px 8px 14px; font-size:12.5px; font-weight:600; letter-spacing:.3px;
+    cursor:pointer; background-image: linear-gradient(45deg, transparent 50%, var(--text-2) 50%), linear-gradient(135deg, var(--text-2) 50%, transparent 50%);
+    background-position: calc(100% - 16px) center, calc(100% - 11px) center;
+    background-size:5px 5px, 5px 5px; background-repeat:no-repeat;
+    transition: border-color .2s var(--ease);
+  }
+  select.fx-select:hover{ border-color: color-mix(in srgb, var(--cyan) 40%, var(--panel-border)); }
+  select.fx-select:focus-visible, input:focus-visible, button:focus-visible, a:focus-visible{
+    outline:2px solid var(--cyan); outline-offset:2px;
+  }
+
+  .hero{ text-align:center; display:flex; flex-direction:column; gap:6px; }
+  .hero-title{
+    margin:0; font-family:var(--font-display); font-weight:700;
+    font-size: clamp(22px, 4.4vw, 38px); letter-spacing:.5px;
+    color:var(--text-0);
+  }
+  .hero-title .accent{
+    color:var(--cyan);
+    text-shadow: 0 0 22px color-mix(in srgb, var(--cyan) 45%, transparent);
+  }
+  .typed-row{
+    font-size: clamp(13px, 1.6vw, 16px); color:var(--text-1); min-height:1.4em;
+    font-variant-ligatures:none;
+  }
+  .cursor{ display:inline-block; width:2px; height:1em; background:var(--cyan); margin-left:2px; vertical-align:-2px; animation: blink 1s steps(1) infinite; }
+  @keyframes blink{ 0%,100%{opacity:1;} 50%{opacity:0;} }
+
+  form.search-row{ display:flex; gap:10px; align-items:stretch; flex-wrap:wrap; }
+  .search-box{
+    flex: 1 1 320px;
+    display:flex; align-items:center; gap:10px;
+    padding: 6px 8px 6px 18px;
+    border-radius:999px;
+    background: rgba(255,255,255,.035);
+    border:1px solid var(--panel-border);
+    transition: box-shadow .22s var(--ease), border-color .22s var(--ease), transform .22s var(--ease);
+  }
+  html.light .search-box{ background: rgba(10,20,35,.03); }
+  .search-box:focus-within{
+    border-color: color-mix(in srgb, var(--cyan) 55%, var(--panel-border));
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--cyan) 14%, transparent), var(--shadow-deep);
+    transform:translateY(-1px);
+  }
+  .search-box input{
+    flex:1; min-width:0; background:transparent; border:none; outline:none;
+    color:var(--text-0); font-size:15.5px; font-family:var(--font-body); padding:10px 0;
+  }
+  .search-box input::placeholder{ color:var(--text-2); }
+
+  .icon-btn{
+    display:grid; place-items:center; width:40px; height:40px; flex:none;
+    border-radius:50%; border:1px solid var(--panel-border);
+    background:var(--panel-hi); color:var(--text-0); cursor:pointer; font-size:16px;
+    transition: transform .16s var(--ease), background .16s var(--ease), border-color .16s var(--ease);
+  }
+  .icon-btn:hover{ transform:translateY(-1px); border-color: color-mix(in srgb, var(--cyan) 45%, var(--panel-border)); }
+  .icon-btn:active{ transform:translateY(0) scale(.95); }
+  .icon-btn.submit{
+    background: linear-gradient(135deg, var(--cyan), var(--blue)); color:#03211c; border:none;
+  }
+  .icon-btn.mic.listening{ animation: pulse 1.1s infinite; border-color:var(--cyan); }
+  @keyframes pulse{
+    0%{ box-shadow:0 0 0 0 color-mix(in srgb, var(--cyan) 45%, transparent);}
+    70%{ box-shadow:0 0 0 12px transparent;}
+    100%{ box-shadow:0 0 0 0 transparent;}
+  }
+
+  .engine-row{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+  .chip-select{
+    display:flex; align-items:center; gap:8px; padding:10px 14px;
+    background:var(--panel-hi); border:1px solid var(--panel-border); border-radius:999px;
+    flex:1 1 160px;
+  }
+  .chip-select select{
+    appearance:none; -webkit-appearance:none; background:transparent; border:none; outline:none;
+    color:var(--text-0); font-size:13.5px; font-weight:600; width:100%; cursor:pointer;
+  }
+  .pill-toggle{
+    display:flex; align-items:center; gap:8px; padding:10px 16px; border-radius:999px; cursor:pointer;
+    border:1px solid var(--panel-border); background:var(--panel-hi); font-weight:600; font-size:13px;
+    color:var(--cyan); transition: background .2s var(--ease), color .2s var(--ease), border-color .2s var(--ease);
+    flex:none; white-space:nowrap;
+  }
+  .pill-toggle[data-on="false"]{ color:var(--text-2); }
+  .pill-toggle:hover{ border-color: color-mix(in srgb, var(--cyan) 40%, var(--panel-border)); }
+
+  .info-row{
+    display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap;
+    font-size:12px; color:var(--text-2);
+  }
+
+  footer.card-footer{
+    text-align:center; font-size:12.5px; color:var(--text-2);
+    display:flex; gap:10px; justify-content:center; flex-wrap:wrap; align-items:center;
+  }
+  footer.card-footer a{ color:var(--text-1); text-decoration:none; cursor:pointer; border-bottom:1px dotted transparent; transition: color .2s, border-color .2s; }
+  footer.card-footer a:hover{ color:var(--cyan); border-color: var(--cyan); }
+  .dot-sep{ opacity:.5; }
+
+  /* Modal */
+  .modal{
+    position:fixed; inset:0; z-index:50; display:none;
+    align-items:center; justify-content:center;
+    background: rgba(2,4,8,.6); backdrop-filter: blur(4px);
+    padding:20px; opacity:0; transition:opacity .25s var(--ease);
+  }
+  .modal.open{ display:flex; }
+  .modal-content{
+    width:100%; max-width:480px; max-height:min(80vh,560px); overflow:auto;
+    background:var(--bg-2); color:var(--text-0); border:1px solid var(--panel-border);
+    border-radius:var(--radius-lg); padding:26px; position:relative;
+    box-shadow:var(--shadow-deep);
+    transform:scale(.92) translateY(8px); transition:transform .28s var(--ease);
+  }
+  .modal.open .modal-content{ transform:none; }
+  .modal-content h2{ margin:0 0 12px; font-family:var(--font-display); font-size:18px; letter-spacing:.5px; color:var(--cyan); }
+  .modal-content p{ font-size:14px; line-height:1.6; color:var(--text-1); margin:0 0 12px; }
+  .modal-close{
+    position:absolute; top:14px; right:14px; width:30px; height:30px; border-radius:50%;
+    border:1px solid var(--panel-border); background:var(--panel-hi); color:var(--text-1);
+    cursor:pointer; display:grid; place-items:center; font-size:16px;
+  }
+
+  /* Responsive breakpoints */
+  @media (max-width:640px){
+    .brand-text span{ display:none; }
+    .head-controls{ gap:6px; }
+    .switch-label{ display:none; }
+    .search-box{ padding:5px 6px 5px 14px; }
+    .icon-btn{ width:36px; height:36px; }
+    .engine-row{ flex-direction:column; align-items:stretch; }
+    .pill-toggle{ justify-content:center; }
+  }
+  @media (min-width:641px) and (max-width:1024px){
+    .card{ max-width:820px; }
+  }
+  @media (min-width:1025px){
+    .card{ max-width:1000px; }
+  }
+  @media (hover:none){
+    .icon-btn:hover, .switch:hover, select.fx-select:hover{ transform:none; }
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration:.001ms !important; animation-iteration-count:1 !important; transition-duration:.001ms !important; }
+  }
+
+  @font-face{ font-family:'Inter'; src: local('Inter'); }
+</style>
 </head>
 
 <body>
-    <div id="vanta-bg">
-        <div class="overlay" role="main" aria-label="VantaBlack interface">
-            <header>
-                <div class="brand">
-                    <div class="logo">VB</div>
-                    <div>
-                        <h1>VantaBlack</h1>
-                        <div style="font-size:12px; color:var(--muted); margin-top:2px;">Private search, beautifully built</div>
-                    </div>
-                </div>
+  <div id="stage">
+    <canvas id="fx-canvas" aria-hidden="true"></canvas>
+  </div>
+  <div class="noise" aria-hidden="true"></div>
 
-                <div style="display:flex; gap:8px; align-items:center;">
-                    <label style="display:flex; gap:8px; align-items:center; cursor:pointer;">
-                        <input id="themeToggle" type="checkbox" aria-label="Toggle dark light" />
-                        <span class="pill" id="themeLabel">Dark / Light</span>
-                    </label>
-
-                    <label style="display:flex; gap:8px; align-items:center; cursor:pointer;">
-                        <select id="vantaSelector" title="Background style" aria-label="Background selector">
-                            <option value="NET">Net</option>
-                            <option value="WAVES">Waves</option>
-                            <option value="GLOBE">Globe</option>
-                            <option value="CELLS">Cells</option>
-                            <option value="FOG">Fog</option>
-                            <option value="DOTS">Dots</option>
-                        </select>
-                    </label>
-                </div>
-            </header>
-
-            <div class="hero">
-                <div class="hero-title">
-                    <span id="staticTitle">🔍 Search Privately</span>
-                    <span class="typing" id="typed"></span><span class="cursor">|</span>
-                </div>
-            </div>
-
-            <div class="search-row" role="search" aria-label="Search form">
-                <div class="search-box" aria-hidden="false">
-                    <input id="searchInput" type="text" placeholder="Type or speak to search — privacy first" autocomplete="off" />
-                    <button id="micBtn" class="icon-btn" title="Voice search" aria-label="Voice search">🎙️</button>
-                    <button id="searchBtn" class="icon-btn" title="Search" aria-label="Search">➡️</button>
-                </div>
-
-                <div style="display:flex; gap:8px; align-items:center;">
-                    <select id="engineSelect" aria-label="Choose search engine">
-                        <option value="https://www.google.com/search?q=">Google</option>
-                        <option value="https://duckduckgo.com/?q=">DuckDuckGo</option>
-                        <option value="https://www.bing.com/search?q=">Bing</option>
-                        <option value="https://search.brave.com/search?q=">Brave</option>
-                        <option value="https://www.startpage.com/do/search?query=">Startpage</option>
-                        <option value="https://www.ecosia.org/search?q=">Ecosia</option>
-                    </select>
-
-                    <button id="adBlockToggle" class="pill" title="Toggle ad block">🛡️ AdBlock ON</button>
-                </div>
-            </div>
-
-            <div class="controls">
-                <div class="controls-center">
-                    <div class="hint">Tip: Use the mic for hands-free search</div>
-                </div>
-                <div class="controls-right">
-                    <div class="hint">Background effect powered by Vanta.js</div>
-                </div>
-            </div>
-
-            <!-- Footer -->
-            <div class="footer">
-                No logs. No tracking. Just search. |
-                <a id="openTerms">Terms & Conditions</a> |
-                <a id="openPrivacy">Privacy Policy</a>
-            </div>
+  <div class="app">
+    <main class="card" aria-label="VantaBlack private search">
+      <header>
+        <div class="brand">
+          <div class="logo" aria-hidden="true">VB</div>
+          <div class="brand-text">
+            <h1>VANTABLACK</h1>
+            <span>Private search, beautifully built</span>
+          </div>
         </div>
-    </div>
 
-    <!-- Modals -->
-    <div id="termsModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal('termsModal')">&times;</span>
-            <h2>Terms & Conditions</h2>
-            <p>This search tool is provided as-is with pure guarantee of availability or accuracy. You are encouraged to use it responsibly.</p>
-            <p>We do not store, track, or sell any user data. All searches are redirected to third-party engines like Google or DuckDuckGo.</p>
+        <div class="head-controls">
+          <label class="switch" title="Toggle dark / light">
+            <input id="themeToggle" type="checkbox" aria-label="Toggle dark or light theme" />
+            <span class="switch-label" id="themeLabel">Dark</span>
+          </label>
+
+          <select id="fxSelector" class="fx-select" title="Background style" aria-label="Background style">
+            <option value="NET">Net</option>
+            <option value="WAVES">Waves</option>
+            <option value="GLOBE">Globe</option>
+            <option value="DOTS">Dots</option>
+            <option value="FOG">Fog</option>
+          </select>
         </div>
-    </div>
+      </header>
 
-    <div id="privacyModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal('privacyModal')">&times;</span>
-            <h2>Privacy Policy</h2>
-            <p>We respect your privacy. This search tool does not log queries, store IP addresses, or use cookies.</p>
-            <p>Searches are sent directly to your chosen engine (e.g., Google) without tracking from our side.</p>
+      <div class="hero">
+        <h2 class="hero-title"><span class="accent">◆</span> Search Privately</h2>
+        <div class="typed-row"><span id="typed"></span><span class="cursor"></span></div>
+      </div>
+
+      <form class="search-row" id="searchForm" role="search" aria-label="Search form">
+        <div class="search-box">
+          <input id="searchInput" type="text" placeholder="Type or speak to search — privacy first" autocomplete="off" inputmode="search" />
+          <button type="button" id="micBtn" class="icon-btn mic" title="Voice search" aria-label="Voice search">🎙️</button>
+          <button type="submit" id="searchBtn" class="icon-btn submit" title="Search" aria-label="Search">➜</button>
         </div>
+      </form>
+
+      <div class="engine-row">
+        <div class="chip-select">
+          <select id="engineSelect" aria-label="Choose search engine">
+            <option value="https://www.google.com/search?q=">Google</option>
+            <option value="https://duckduckgo.com/?q=">DuckDuckGo</option>
+            <option value="https://www.bing.com/search?q=">Bing</option>
+            <option value="https://search.brave.com/search?q=">Brave</option>
+            <option value="https://www.startpage.com/do/search?query=">Startpage</option>
+            <option value="https://www.ecosia.org/search?q=">Ecosia</option>
+          </select>
+        </div>
+        <button type="button" id="adBlockToggle" class="pill-toggle" data-on="true">🛡️ AdBlock ON</button>
+      </div>
+
+      <div class="info-row">
+        <span>Tip: tap the mic for hands-free search</span>
+        <span>No CDNs. No trackers. Runs fully offline.</span>
+      </div>
+
+      <footer class="card-footer">
+        <span>No logs. No tracking. Just search.</span>
+        <span class="dot-sep">•</span>
+        <a id="openTerms" tabindex="0">Terms &amp; Conditions</a>
+        <span class="dot-sep">•</span>
+        <a id="openPrivacy" tabindex="0">Privacy Policy</a>
+      </footer>
+    </main>
+  </div>
+
+  <div id="termsModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="termsTitle">
+    <div class="modal-content">
+      <button type="button" class="modal-close" data-close="termsModal" aria-label="Close">&times;</button>
+      <h2 id="termsTitle">Terms &amp; Conditions</h2>
+      <p>This search tool is provided as-is with no guarantee of availability or accuracy. Use it responsibly.</p>
+      <p>We do not store, track, or sell any user data. All searches are redirected to third-party engines like Google or DuckDuckGo, and are subject to their own terms.</p>
     </div>
+  </div>
 
-    <!-- Developed by iamfardinsk -->
+  <div id="privacyModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="privacyTitle">
+    <div class="modal-content">
+      <button type="button" class="modal-close" data-close="privacyModal" aria-label="Close">&times;</button>
+      <h2 id="privacyTitle">Privacy Policy</h2>
+      <p>We respect your privacy. This tool does not log queries, store IP addresses, or set tracking cookies.</p>
+      <p>Searches are sent directly to your chosen engine without any tracking from our side. Preferences (engine, theme, background) are kept only in your browser's local storage.</p>
+    </div>
+  </div>
 
-    <!-- Vanta + three.js (CDNs) -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r121/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.net.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.waves.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.globe.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.cells.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.fog.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.dots.min.js"></script>
+  <!-- Developed by iamfardinsk / OMAAIR SK -->
 
-    <script>
-        /***** Typing animation (loop) *****/
-        (function typingLoop() {
-            const fullText = "Explore privately. Fast. Secure.";
-            const el = document.getElementById('typed');
-            let i = 0,
-                deleting = false;
+  <script>
+  (function(){
+    "use strict";
 
-            function step() {
-                if (!deleting) {
-                    if (i <= fullText.length) {
-                        el.textContent = fullText.slice(0, i);
-                        i++;
-                        setTimeout(step, 55);
-                    } else {
-                        deleting = true;
-                        setTimeout(step, 1400);
-                    }
-                } else {
-                    if (i > 0) {
-                        i--;
-                        el.textContent = fullText.slice(0, i);
-                        setTimeout(step, 35);
-                    } else {
-                        deleting = false;
-                        setTimeout(step, 600);
-                    }
-                }
-            }
-            step();
-        })();
+    var $ = function(id){ return document.getElementById(id); };
+    var root = document.documentElement;
+    var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-        /***** Vanta manager *****/
-        let currentVanta = null;
+    /* ---------- Theme ---------- */
+    var themeToggle = $('themeToggle'), themeLabel = $('themeLabel');
+    function applyTheme(light){
+      root.classList.toggle('light', light);
+      themeToggle.checked = light;
+      themeLabel.textContent = light ? 'Light' : 'Dark';
+      localStorage.setItem('vb_theme', light ? 'light' : 'dark');
+    }
+    applyTheme(localStorage.getItem('vb_theme') === 'light');
+    themeToggle.addEventListener('change', function(e){ applyTheme(e.target.checked); });
 
-        function getThemeColors() {
-            const isLight = document.body.classList.contains('light');
-            return {
-                bg: isLight ? 0xffffff : 0x0b0f17,
-                colorA: isLight ? 0x008cff : 0x00ffd0,
-                colorB: isLight ? 0x00aaff : 0x008cff
-            };
-        }
-
-        function loadVanta(effectName) {
-            try {
-                if (currentVanta && currentVanta.destroy) currentVanta.destroy();
-            } catch (e) {}
-            const colors = getThemeColors();
-            const opts = {
-                el: "#vanta-bg",
-                mouseControls: true,
-                touchControls: true,
-                gyroControls: false,
-                minHeight: 200.00,
-                minWidth: 200.00,
-                scale: 1.0,
-                scaleMobile: 1.0,
-                color: colors.colorA,
-                backgroundColor: colors.bg,
-            };
-
-            switch (effectName) {
-                case 'NET':
-                    currentVanta = VANTA.NET(Object.assign(opts, {
-                        points: 12.0,
-                        maxDistance: 20.0,
-                        spacing: 16.0
-                    }));
-                    break;
-                case 'WAVES':
-                    currentVanta = VANTA.WAVES(Object.assign(opts, {
-                        waveHeight: 20.0,
-                        waveSpeed: 1.0,
-                        zoom: 0.9
-                    }));
-                    break;
-                case 'GLOBE':
-                    currentVanta = VANTA.GLOBE(Object.assign(opts, {
-                        color: colors.colorB,
-                        backgroundColor: colors.bg,
-                        size: 1.0
-                    }));
-                    break;
-                case 'CELLS':
-                    currentVanta = VANTA.CELLS(Object.assign(opts, {
-                        size: 1.8,
-                        points: 4.0
-                    }));
-                    break;
-                case 'FOG':
-                    currentVanta = VANTA.FOG(Object.assign(opts, {
-                        highlightColor: colors.colorA,
-                        midtoneColor: colors.colorB,
-                        lowlightColor: colors.colorB
-                    }));
-                    break;
-                case 'DOTS':
-                    currentVanta = VANTA.DOTS(Object.assign(opts, {
-                        size: 2.0,
-                        spacing: 20.0
-                    }));
-                    break;
-                default:
-                    currentVanta = VANTA.NET(opts);
-                    break;
-            }
-        }
-
-        // Initialize default Vanta
-        window.addEventListener('load', () => {
-            const saved = localStorage.getItem('vantaEffect') || 'NET';
-            const savedTheme = localStorage.getItem('vantaTheme') || 'dark';
-            if (savedTheme === 'light') {
-                document.body.classList.add('light');
-                document.getElementById('themeToggle').checked = true;
-            }
-            document.getElementById('vantaSelector').value = saved;
-            loadVanta(saved);
-        });
-
-        // Change Vanta when selector is changed
-        document.getElementById('vantaSelector').addEventListener('change', (e) => {
-            const val = e.target.value;
-            localStorage.setItem('vantaEffect', val);
-            loadVanta(val);
-        });
-
-        // Theme toggle updates both page and vanta colors
-        document.getElementById('themeToggle').addEventListener('change', (e) => {
-            const on = e.target.checked;
-            document.body.classList.toggle('light', on);
-            localStorage.setItem('vantaTheme', on ? 'light' : 'dark');
-            const cur = document.getElementById('vantaSelector').value || 'NET';
-            loadVanta(cur);
-        });
-
-        /***** Search / engine selection logic *****/
-        const searchBtn = document.getElementById('searchBtn');
-        const searchInput = document.getElementById('searchInput');
-        const engineSelect = document.getElementById('engineSelect');
-
-        function doSearch() {
-            const q = (searchInput.value || '').trim();
-            if (!q) return;
-            const engine = engineSelect.value;
-            localStorage.setItem('preferredEngine', engine);
-            window.location.href = engine + encodeURIComponent(q);
-        }
-
-        searchBtn.addEventListener('click', doSearch);
-        searchInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') doSearch();
-        });
-
-        // restore preferred engine
-        window.addEventListener('DOMContentLoaded', () => {
-            const pref = localStorage.getItem('preferredEngine');
-            if (pref) engineSelect.value = pref;
-        });
-
-        /***** Fake adblock toggle (UI only placeholder) *****/
-        const adBlockBtn = document.getElementById('adBlockToggle');
-        let adBlockOn = true;
-        adBlockBtn.addEventListener('click', () => {
-            adBlockOn = !adBlockOn;
-            adBlockBtn.textContent = adBlockOn ? '🛡️ AdBlock ON' : '🛡️ AdBlock OFF';
-            localStorage.setItem('adBlockOn', adBlockOn ? '1' : '0');
-        });
-
-        (function restoreAdBlock() {
-            const s = localStorage.getItem('adBlockOn');
-            if (s === '0') {
-                adBlockOn = false;
-                adBlockBtn.textContent = '🛡️ AdBlock OFF';
-            }
-        })();
-
-        /***** Voice search (Web Speech API) *****/
-        const micBtn = document.getElementById('micBtn');
-        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-        if (SpeechRecognition) {
-            const recognition = new SpeechRecognition();
-            recognition.continuous = false;
-            recognition.interimResults = false;
-            recognition.lang = 'en-US';
-            recognition.onresult = (evt) => {
-                const t = evt.results[0][0].transcript || '';
-                searchInput.value = t;
-                micBtn.classList.remove('mic-active');
-                doSearch();
-            };
-            recognition.onerror = (e) => {
-                console.warn('Speech error', e);
-                micBtn.classList.remove('mic-active');
-            };
-            recognition.onend = () => micBtn.classList.remove('mic-active');
-            micBtn.addEventListener('click', () => {
-                try {
-                    recognition.start();
-                    micBtn.classList.add('mic-active');
-                } catch (err) {
-                    console.error(err);
-                    micBtn.classList.remove('mic-active');
-                }
-            });
+    /* ---------- Typing hero line ---------- */
+    (function typingLoop(){
+      var phrases = ["Explore privately. Fast. Secure.", "Zero logs. Zero noise.", "Your search, your business."];
+      var el = $('typed'), pi = 0, ci = 0, deleting = false;
+      function step(){
+        var full = phrases[pi];
+        if(!deleting){
+          ci++; el.textContent = full.slice(0, ci);
+          if(ci >= full.length){ deleting = true; setTimeout(step, 1500); return; }
         } else {
-            micBtn.title = 'Voice search not supported';
-            micBtn.style.opacity = '0.6';
+          ci--; el.textContent = full.slice(0, ci);
+          if(ci <= 0){ deleting = false; pi = (pi+1) % phrases.length; setTimeout(step, 400); return; }
         }
+        setTimeout(step, deleting ? 30 : 48);
+      }
+      if(!reduceMotion) step(); else el.textContent = phrases[0];
+    })();
 
-        /***** Modal logic *****/
-        function openModal(id) {
-            const modal = document.getElementById(id);
-            const content = modal.querySelector('.modal-content');
-            modal.style.display = 'flex';
-            setTimeout(() => {
-                modal.style.opacity = 1;
-                content.style.transform = 'scale(1)';
-            }, 10);
-        }
+    /* ---------- Canvas background engine (dependency-free) ---------- */
+    var canvas = $('fx-canvas'), ctx = canvas.getContext('2d');
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    var W = 0, H = 0, rafId = null, particles = [], mode = 'NET';
+    var pointer = { x: -9999, y: -9999, active:false };
 
-        function closeModal(id) {
-            const modal = document.getElementById(id);
-            const content = modal.querySelector('.modal-content');
-            content.style.transform = 'scale(0.8)';
-            modal.style.opacity = 0;
-            setTimeout(() => {
-                modal.style.display = 'none';
-            }, 300);
-        }
+    function resize(){
+      W = window.innerWidth;
+      H = window.innerHeight;
+      canvas.width = Math.floor(W * dpr);
+      canvas.height = Math.floor(H * dpr);
+      ctx.setTransform(dpr,0,0,dpr,0,0);
+      seedParticles();
+    }
 
-        document.getElementById('openTerms').addEventListener('click', () => openModal('termsModal'));
-        document.getElementById('openPrivacy').addEventListener('click', () => openModal('privacyModal'));
-        window.addEventListener('click', (e) => {
-            ['termsModal', 'privacyModal'].forEach(id => {
-                const modal = document.getElementById(id);
-                if (e.target === modal) closeModal(id);
-            });
+    function accentColor(alpha){
+      var light = root.classList.contains('light');
+      return light ? 'rgba(10,168,142,'+alpha+')' : 'rgba(0,255,208,'+alpha+')';
+    }
+    function accentColor2(alpha){
+      var light = root.classList.contains('light');
+      return light ? 'rgba(31,111,224,'+alpha+')' : 'rgba(61,139,255,'+alpha+')';
+    }
+
+    function seedParticles(){
+      var density = Math.max(30, Math.min(110, Math.floor((W*H)/22000)));
+      particles = [];
+      for(var i=0;i<density;i++){
+        particles.push({
+          x: Math.random()*W, y: Math.random()*H,
+          vx: (Math.random()-0.5)*0.35, vy: (Math.random()-0.5)*0.35,
+          r: 1 + Math.random()*1.8,
+          phase: Math.random()*Math.PI*2
         });
+      }
+    }
 
-        window.addEventListener('beforeunload', () => {
-            try {
-                if (currentVanta && currentVanta.destroy) currentVanta.destroy();
-            } catch (e) {}
-        });
-    </script>
+    function drawNet(t){
+      ctx.clearRect(0,0,W,H);
+      var linkDist = Math.min(160, W/6);
+      for(var i=0;i<particles.length;i++){
+        var p = particles[i];
+        p.x += p.vx; p.y += p.vy;
+        if(pointer.active){
+          var dx = p.x-pointer.x, dy = p.y-pointer.y, d2 = dx*dx+dy*dy;
+          if(d2 < 20000){ var f = (20000-d2)/20000*0.03; p.vx += dx*f*0.01; p.vy += dy*f*0.01; }
+        }
+        if(p.x<0||p.x>W) p.vx*=-1;
+        if(p.y<0||p.y>H) p.vy*=-1;
+        p.vx = Math.max(-0.6, Math.min(0.6, p.vx));
+        p.vy = Math.max(-0.6, Math.min(0.6, p.vy));
+      }
+      for(var a=0;a<particles.length;a++){
+        for(var b=a+1;b<particles.length;b++){
+          var pa=particles[a], pb=particles[b];
+          var dx=pa.x-pb.x, dy=pa.y-pb.y, dist=Math.sqrt(dx*dx+dy*dy);
+          if(dist < linkDist){
+            ctx.strokeStyle = accentColor((1-dist/linkDist)*0.22);
+            ctx.lineWidth = 1;
+            ctx.beginPath(); ctx.moveTo(pa.x,pa.y); ctx.lineTo(pb.x,pb.y); ctx.stroke();
+          }
+        }
+      }
+      for(var i2=0;i2<particles.length;i2++){
+        var pp = particles[i2];
+        ctx.beginPath();
+        ctx.fillStyle = accentColor(0.8);
+        ctx.arc(pp.x, pp.y, pp.r, 0, Math.PI*2);
+        ctx.fill();
+      }
+    }
+
+    function drawDots(t){
+      ctx.clearRect(0,0,W,H);
+      var gap = Math.max(26, Math.min(46, W/28));
+      var cols = Math.ceil(W/gap)+1, rows = Math.ceil(H/gap)+1;
+      for(var y=0;y<rows;y++){
+        for(var x=0;x<cols;x++){
+          var px = x*gap, py = y*gap;
+          var d = Math.hypot(px-pointer.x, py-pointer.y);
+          var wave = Math.sin(t*0.0012 + (x+y)*0.4) * 1.4;
+          var s = 1.4 + wave + (pointer.active && d<140 ? (140-d)/140*3 : 0);
+          ctx.beginPath();
+          ctx.fillStyle = accentColor(0.16 + Math.max(0, (1.4+wave)/8));
+          ctx.arc(px, py + Math.sin(t*0.001 + x*0.5)*3, Math.max(0.6,s*0.5), 0, Math.PI*2);
+          ctx.fill();
+        }
+      }
+    }
+
+    function drawWaves(t){
+      ctx.clearRect(0,0,W,H);
+      var lines = 5;
+      for(var l=0; l<lines; l++){
+        ctx.beginPath();
+        var amp = 18 + l*6;
+        var yBase = H*0.35 + l*(H*0.11);
+        for(var x=0;x<=W;x+=10){
+          var y = yBase + Math.sin((x*0.006) + t*0.0009 + l*1.3) * amp + Math.sin((x*0.002)+t*0.0005)*amp*0.4;
+          if(x===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+        }
+        ctx.strokeStyle = l%2===0 ? accentColor(0.16 - l*0.015) : accentColor2(0.14 - l*0.015);
+        ctx.lineWidth = 1.4;
+        ctx.stroke();
+      }
+    }
+
+    function drawFog(t){
+      ctx.clearRect(0,0,W,H);
+      var g1 = ctx.createRadialGradient(W*0.2, H*0.25 + Math.sin(t*0.0003)*40, 20, W*0.2, H*0.25, W*0.7);
+      g1.addColorStop(0, accentColor(0.12));
+      g1.addColorStop(1, 'transparent');
+      ctx.fillStyle = g1; ctx.fillRect(0,0,W,H);
+      var g2 = ctx.createRadialGradient(W*0.85, H*0.8 + Math.cos(t*0.00025)*40, 20, W*0.85, H*0.8, W*0.7);
+      g2.addColorStop(0, accentColor2(0.12));
+      g2.addColorStop(1, 'transparent');
+      ctx.fillStyle = g2; ctx.fillRect(0,0,W,H);
+    }
+
+    function drawGlobe(t){
+      ctx.clearRect(0,0,W,H);
+      var cx = W*0.5, cy = H*0.5, R = Math.min(W,H)*0.32;
+      var rings = 9;
+      for(var i=0;i<rings;i++){
+        var ry = Math.cos((i/(rings-1))*Math.PI - Math.PI/2) * R;
+        var rx = Math.sin((i/(rings-1))*Math.PI) * R;
+        ctx.beginPath();
+        ctx.ellipse(cx, cy, Math.max(2,rx), Math.abs(ry)*0.28 + 2, 0, 0, Math.PI*2);
+        ctx.strokeStyle = accentColor(0.14);
+        ctx.lineWidth = 1;
+        ctx.stroke();
+      }
+      var meridians = 10;
+      for(var m=0;m<meridians;m++){
+        var ang = (m/meridians)*Math.PI*2 + t*0.00015;
+        ctx.beginPath();
+        for(var s=0;s<=40;s++){
+          var th = (s/40)*Math.PI*2;
+          var x = cx + Math.sin(th)*Math.cos(ang)*R;
+          var y = cy + Math.cos(th)*R*0.9;
+          if(s===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+        }
+        ctx.strokeStyle = accentColor2(0.10);
+        ctx.stroke();
+      }
+      ctx.beginPath();
+      ctx.arc(cx,cy,R,0,Math.PI*2);
+      ctx.strokeStyle = accentColor(0.3);
+      ctx.stroke();
+    }
+
+    var drawers = { NET:drawNet, DOTS:drawDots, WAVES:drawWaves, FOG:drawFog, GLOBE:drawGlobe };
+
+    var lastFrame = 0;
+    function loop(t){
+      rafId = requestAnimationFrame(loop);
+      if(t - lastFrame < 33) return; // ~30fps cap for battery friendliness
+      lastFrame = t;
+      drawers[mode](t);
+    }
+
+    function setMode(m){
+      mode = drawers[m] ? m : 'NET';
+      localStorage.setItem('vb_fx', mode);
+      $('fxSelector').value = mode;
+    }
+
+    window.addEventListener('resize', debounce(resize, 150));
+    window.addEventListener('pointermove', function(e){ pointer.x=e.clientX; pointer.y=e.clientY; pointer.active=true; }, {passive:true});
+    window.addEventListener('pointerleave', function(){ pointer.active=false; });
+    document.addEventListener('visibilitychange', function(){
+      if(document.hidden){ if(rafId) cancelAnimationFrame(rafId); rafId=null; }
+      else if(!rafId && !reduceMotion){ rafId = requestAnimationFrame(loop); }
+    });
+
+    function debounce(fn, wait){
+      var t; return function(){ clearTimeout(t); var a=arguments, ctx=this; t=setTimeout(function(){ fn.apply(ctx,a); }, wait); };
+    }
+
+    $('fxSelector').addEventListener('change', function(e){ setMode(e.target.value); });
+
+    resize();
+    setMode(localStorage.getItem('vb_fx') || 'NET');
+    if(!reduceMotion){ rafId = requestAnimationFrame(loop); }
+    else { drawers[mode](0); }
+
+    /* ---------- Search ---------- */
+    var searchForm = $('searchForm'), searchInput = $('searchInput'), engineSelect = $('engineSelect');
+    var savedEngine = localStorage.getItem('vb_engine');
+    if(savedEngine) engineSelect.value = savedEngine;
+
+    searchForm.addEventListener('submit', function(e){
+      e.preventDefault();
+      var q = (searchInput.value || '').trim();
+      if(!q) { searchInput.focus(); return; }
+      localStorage.setItem('vb_engine', engineSelect.value);
+      window.location.href = engineSelect.value + encodeURIComponent(q);
+    });
+
+    /* ---------- AdBlock pill (UI state placeholder) ---------- */
+    var adBtn = $('adBlockToggle');
+    var adOn = localStorage.getItem('vb_adblock') !== '0';
+    function renderAd(){ adBtn.textContent = adOn ? '🛡️ AdBlock ON' : '🛡️ AdBlock OFF'; adBtn.dataset.on = adOn; }
+    renderAd();
+    adBtn.addEventListener('click', function(){ adOn = !adOn; localStorage.setItem('vb_adblock', adOn?'1':'0'); renderAd(); });
+
+    /* ---------- Voice search ---------- */
+    var micBtn = $('micBtn');
+    var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if(SR){
+      var recognition = new SR();
+      recognition.continuous = false;
+      recognition.interimResults = false;
+      recognition.lang = 'en-US';
+      recognition.onresult = function(evt){
+        var t = evt.results[0][0].transcript || '';
+        searchInput.value = t;
+        micBtn.classList.remove('listening');
+        searchForm.requestSubmit ? searchForm.requestSubmit() : searchForm.dispatchEvent(new Event('submit', {cancelable:true}));
+      };
+      recognition.onerror = function(){ micBtn.classList.remove('listening'); };
+      recognition.onend = function(){ micBtn.classList.remove('listening'); };
+      micBtn.addEventListener('click', function(){
+        try{ recognition.start(); micBtn.classList.add('listening'); }
+        catch(err){ micBtn.classList.remove('listening'); }
+      });
+    } else {
+      micBtn.title = 'Voice search not supported on this browser';
+      micBtn.style.opacity = '0.5';
+      micBtn.disabled = true;
+    }
+
+    /* ---------- Modals ---------- */
+    function openModal(id){
+      var m = $(id);
+      m.style.display = 'flex';
+      requestAnimationFrame(function(){ m.classList.add('open'); });
+      document.addEventListener('keydown', escClose);
+    }
+    function closeModal(id){
+      var m = $(id);
+      m.classList.remove('open');
+      document.removeEventListener('keydown', escClose);
+      setTimeout(function(){ m.style.display = 'none'; }, 260);
+    }
+    function escClose(e){ if(e.key === 'Escape'){ document.querySelectorAll('.modal.open').forEach(function(m){ closeModal(m.id); }); } }
+
+    $('openTerms').addEventListener('click', function(){ openModal('termsModal'); });
+    $('openPrivacy').addEventListener('click', function(){ openModal('privacyModal'); });
+    document.querySelectorAll('[data-close]').forEach(function(btn){
+      btn.addEventListener('click', function(){ closeModal(btn.getAttribute('data-close')); });
+    });
+    document.querySelectorAll('.modal').forEach(function(modal){
+      modal.addEventListener('click', function(e){ if(e.target === modal) closeModal(modal.id); });
+    });
+
+    // Avoid popping the mobile keyboard on load; only autofocus on larger, pointer-capable screens.
+    if(window.matchMedia('(min-width: 768px) and (hover: hover)').matches){
+      searchInput.focus({ preventScroll:true });
+    }
+  })();
+  </script>
 </body>
-
 </html>
